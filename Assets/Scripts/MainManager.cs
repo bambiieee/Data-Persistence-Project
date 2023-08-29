@@ -18,10 +18,12 @@ public class MainManager : MonoBehaviour
     
     private bool m_GameOver = false;
 
+    [SerializeField]private Text playerNameScore;
     
     // Start is called before the first frame update
     void Start()
     {
+        
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -36,6 +38,7 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+        playerNameScore.text = "Best Score : " + DataManager.instant.bestplayerName + " : " + DataManager.instant.bestScore;
     }
 
     private void Update()
@@ -57,6 +60,7 @@ public class MainManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                DataManager.instant.SaveScoreName();
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         }
@@ -66,6 +70,12 @@ public class MainManager : MonoBehaviour
     {
         m_Points += point;
         ScoreText.text = $"Score : {m_Points}";
+        if(m_Points > DataManager.instant.bestScore)
+        {
+            DataManager.instant.bestScore = m_Points;
+            DataManager.instant.bestplayerName = DataManager.instant.playerName;
+            playerNameScore.text = "Best Score : " + DataManager.instant.bestplayerName + " : " + DataManager.instant.bestScore;
+        }
     }
 
     public void GameOver()
